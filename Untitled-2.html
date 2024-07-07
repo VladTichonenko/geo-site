@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Location Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      background-color: #333;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+    .button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>TBC</h1>
+  
+  <div id="map"></div>
+  <button class="button" onclick="changeMarkerColor('red')">Red</button>
+  <button class="button" onclick="changeMarkerColor('blue')">Blue</button>
+  <button class="button" onclick="changeMarkerColor('green')">Green</button>
+  <button class="button" onclick="shareLocation()">Share My Location</button>
+  
+  <script src="https://unpkg.com/leaflet"></script>
+  <script>
+    let map;
+    let marker;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      map = L.map('map').setView([0, 0], 2);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(map);
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var myLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          map.setView(myLocation, 15);
+
+          marker = L.marker(myLocation, {title: "Это я!"}).addTo(map);
+          marker.bindPopup("Это я!");
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    });
+
+    function shareLocation() {
+      if (map && marker) {
+        console.log("My Location:", marker.getLatLng());
+      } else {
+        alert("Please wait for the map to load your location.");
+      }
+    }
+
+    function changeMarkerColor(color) {
+      if (marker) {
+        marker.setIcon(L.icon({
+          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + color + '.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        }));
+      }
+    }
+  </script>
+</body>
+</html>
